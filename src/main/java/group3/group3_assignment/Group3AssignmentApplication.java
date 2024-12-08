@@ -8,6 +8,7 @@ public class Group3AssignmentApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(Group3AssignmentApplication.class, args);
+		System.out.println("✅ Application started ✅");
 	}
 
 }
