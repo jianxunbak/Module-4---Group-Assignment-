@@ -1,7 +1,7 @@
 package group3.group3_assignment.repository;
 
 import java.util.List;
-//import java.util.Optional;
+import java.util.Optional;
 
 //import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,7 +14,7 @@ public interface FavouritesRepository extends JpaRepository<Favourites, Long> {
 
   // List<Favourites> findAllById(Long id);
 
-  List<Favourites> findAllByUserId(Long userId);
+  Optional<List<Favourites>> findAllByUserId(Long userId);
 
   Favourites findByUserIdAndRecipeId(Long userId, Integer recipeId);
 

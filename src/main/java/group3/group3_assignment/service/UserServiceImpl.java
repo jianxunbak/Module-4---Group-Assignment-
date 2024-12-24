@@ -35,8 +35,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUser(Long id) {
-        return userRepo.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + id));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String authenticatedUsername = authentication.getName();
+        User selectedUser = userRepo.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("user with id: " + id + "is not found."));
+        if (!authenticatedUsername.equals(selectedUser.getUsername())) {
+            throw new UserNotAuthorizeException(id, "get", "another user detail");
+        }
+        return selectedUser;
     }
 
     @Override
@@ -51,13 +57,15 @@ public class UserServiceImpl implements UserService {
 
         User existingUser = userRepo.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("user with id: " + id + "is not found."));
-        if (authenticatedUsername.equals(existingUser.getUsername())) {
-            existingUser.setUsername(user.getUsername());
-            existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
-            existingUser.setEmail(user.getEmail());
-            return userRepo.save(existingUser);
-        } else
-            throw new UserNotAuthorizeException(id, "edit", "user details");
+        if (!authenticatedUsername.equals(existingUser.getUsername())) {
+            throw new UserNotAuthorizeException(id, "edit", "another user details");
+        }
+
+        existingUser.setUsername(user.getUsername());
+        existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        existingUser.setEmail(user.getEmail());
+        return userRepo.save(existingUser);
+
     }
 
     @Override
@@ -71,7 +79,7 @@ public class UserServiceImpl implements UserService {
         if (authenticatedUsername.equals(existingUser.getUsername())) {
             userRepo.delete(existingUser);
         } else
-            throw new UserNotAuthorizeException(id, "edit", "user details");
+            throw new UserNotAuthorizeException(id, "delete", "another user");
     }
 
     // @Override

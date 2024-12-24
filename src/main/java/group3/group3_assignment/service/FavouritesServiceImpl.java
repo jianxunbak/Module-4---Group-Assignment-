@@ -69,7 +69,7 @@ public class FavouritesServiceImpl implements FavouritesService {
       throw new FavouritesNotFoundException();
     }
     if (!authenticatedUsername.equals(favouritesToDelete.getUser().getUsername())) {
-      throw new UserNotAuthorizeException(userId, "delete", "favourites");
+      throw new UserNotAuthorizeException(userId, "delete", "another user's favourites");
     }
 
     favouritesRepository.delete(favouritesToDelete);
@@ -86,25 +86,18 @@ public class FavouritesServiceImpl implements FavouritesService {
   }
 
   @Override
-  public ArrayList<Favourites> getFavouritesByUserId(Long userId) {
+  public List<Favourites> getFavouritesByUserId(Long userId) {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     String authenticatedUsername = authentication.getName();
 
     User existingUser = userRepo.findById(userId)
         .orElseThrow(() -> new UserNotFoundException("user with id: " + userId + "is not found."));
-    if (authenticatedUsername.equals(existingUser.getUsername())) {
-      favouritesRepository.findById(userId).orElseThrow(() -> new FavUserNotFoundException(userId));
-      Optional<List<Favourites>> optionalFavourites = Optional.of(favouritesRepository.findAllByUserId(userId));
-      if (optionalFavourites.isPresent()) {
-        // If the Optional contains a value, unwrap it and return the Favourites object
-        ArrayList<Favourites> foundFavourites = (ArrayList<Favourites>) optionalFavourites.get();
-        return foundFavourites;
-      }
-      throw new FavUserNotFoundException(userId);
-
-    } else
-      throw new UserNotAuthorizeException(userId, "get", "favourites");
-
+    if (!authenticatedUsername.equals(existingUser.getUsername())) {
+      throw new UserNotAuthorizeException(userId, "get", "another user's favourites");
+    }
+    List<Favourites> userFavouritesList = favouritesRepository.findAllByUserId(userId)
+        .orElseThrow(() -> new FavUserNotFoundException(userId));
+    return userFavouritesList;
   }
 
   @Override
@@ -113,17 +106,19 @@ public class FavouritesServiceImpl implements FavouritesService {
     String authenticatedUsername = authentication.getName();
     User existingUser = userRepo.findById(userId)
         .orElseThrow(() -> new UserNotFoundException("user with id: " + userId + "is not found."));
-    if (authenticatedUsername.equals(existingUser.getUsername())) {
-      Recipe selectedRecipe = recipeRepo.findById(recipeId).orElseThrow(() -> new RecipeNotFoundException(recipeId));
-      User selectedUser = userRepo.findById(userId).orElseThrow(() -> new FavUserNotFoundException(userId));
-      if (favouritesRepository.findByUserIdAndRecipeId(userId, recipeId) != null) {
-        throw new DuplicateFavouritesException();
-      }
-      favourites.setRecipe(selectedRecipe);
-      favourites.setUser(selectedUser);
-      return favouritesRepository.save(favourites);
-    } else
-      throw new UserNotAuthorizeException(userId, "add", "favourites");
+    Recipe selectedRecipe = recipeRepo.findById(recipeId).orElseThrow(() -> new RecipeNotFoundException(recipeId));
+    User selectedUser = userRepo.findById(userId).orElseThrow(() -> new FavUserNotFoundException(userId));
+
+    if (!authenticatedUsername.equals(existingUser.getUsername())) {
+      throw new UserNotAuthorizeException(userId, "add", "recipe to another user's favourites");
+    }
+    if (favouritesRepository.findByUserIdAndRecipeId(userId, recipeId) != null) {
+      throw new DuplicateFavouritesException();
+    }
+
+    favourites.setRecipe(selectedRecipe);
+    favourites.setUser(selectedUser);
+    return favouritesRepository.save(favourites);
 
   }
 }

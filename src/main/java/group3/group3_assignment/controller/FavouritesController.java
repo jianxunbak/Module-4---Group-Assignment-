@@ -1,6 +1,8 @@
 package group3.group3_assignment.controller;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -52,8 +54,8 @@ public class FavouritesController {
 
   // Retrieve all favourites recipes
   @GetMapping("/{userId}")
-  public ResponseEntity<ArrayList<Favourites>> getAllFavourites(@PathVariable Long userId) {
-    ArrayList<Favourites> foundfFavourites = favouritesService.getFavouritesByUserId(userId);
+  public ResponseEntity<List<Favourites>> getAllFavourites(@PathVariable Long userId) {
+    List<Favourites> foundfFavourites = favouritesService.getFavouritesByUserId(userId);
     logger.info("User (userId " + userId + ") retrieved array of recipes in favourites list");
     return new ResponseEntity<>(foundfFavourites, HttpStatus.OK);
   }
