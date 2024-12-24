@@ -5,7 +5,7 @@ import group3.group3_assignment.entity.Favourites;
 
 public interface FavouritesService {
 
-  void deleteFavourites(Long userId, Integer recipeId);
+  void deleteFavourites(Long userId, Long FavId);
 
   ArrayList<Favourites> getFavouritesByUserId(Long userId);
 

@@ -15,7 +15,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import group3.group3_assignment.entity.Recipe;
 import group3.group3_assignment.entity.User;
-import jakarta.transaction.Transactional;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 

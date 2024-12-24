@@ -16,9 +16,9 @@ public interface UserService {
 
     void deleteUser(Long id);
 
-    Recipe addRecipeToUser(Long id, Recipe recipe);
+    // Recipe addRecipeToUser(Long id, Recipe recipe);
 
-    List<Recipe> getRecipesByUser(Long userId);
+    // List<Recipe> getRecipesByUser(Long userId);
 
     // Recipe uploadRecipe(Integer userId, Recipe recipe);
 

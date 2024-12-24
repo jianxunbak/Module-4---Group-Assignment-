@@ -42,11 +42,11 @@ public class FavouritesController {
   }
 
   // Delete one favourite ("unfavourite one recipe item")
-  @DeleteMapping("/{userId}/{recipeId}")
-  public ResponseEntity<HttpStatus> deleteOneFavourite(@PathVariable Long userId, @PathVariable Integer recipeId) {
-    favouritesService.deleteFavourites(userId, recipeId);
+  @DeleteMapping("/{userId}/{FavId}")
+  public ResponseEntity<HttpStatus> deleteOneFavourite(@PathVariable Long userId, @PathVariable Long FavId) {
+    favouritesService.deleteFavourites(userId, FavId);
     logger.info(
-        "User (userId " + userId + ") removed recipe (recipeId " + recipeId + ") from favourites list");
+        "User (userId " + userId + ") removed recipe (recipeId " + FavId + ") from favourites list");
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
 

@@ -3,6 +3,7 @@ package group3.group3_assignment.config;
 import java.time.LocalDate;
 import java.util.Arrays;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import group3.group3_assignment.entity.Favourites;
@@ -17,13 +18,16 @@ import jakarta.annotation.PostConstruct;
 public class DataLoader {
         private RecipeRepo recipeRepo;
         private UserRepo userRepo;
+        private final PasswordEncoder passwordEncoder;
 
         private FavouritesRepository favouritesRepository;
 
-        public DataLoader(RecipeRepo recipeRepo, UserRepo userRepo, FavouritesRepository favouritesRepository) {
+        public DataLoader(RecipeRepo recipeRepo, UserRepo userRepo, FavouritesRepository favouritesRepository,
+                        PasswordEncoder passwordEncoder) {
                 this.recipeRepo = recipeRepo;
                 this.userRepo = userRepo;
                 this.favouritesRepository = favouritesRepository;
+                this.passwordEncoder = passwordEncoder;
         }
 
         @PostConstruct
@@ -42,12 +46,12 @@ public class DataLoader {
                 LocalDate parsedDate5 = LocalDate.parse(dateToParse5);
 
                 User user1 = userRepo.save(User.builder().email("abc@gmail.com").username("John")
-                                .password("123ABCabc!@#").build());
+                                .password(passwordEncoder.encode("123ABCabc!@#")).build());
                 User user2 = userRepo.save(User.builder().email("123@gmail.com").username("Stark")
-                                .password("123ABCabc!@#").build());
+                                .password(passwordEncoder.encode("123ABCabc!@#")).build());
 
                 User user3 = userRepo.save(User.builder().email("marytan@email.com").username("marytangourmet")
-                                .password("password")
+                                .password(passwordEncoder.encode("password"))
                                 .build());
                 Recipe recipe1 = recipeRepo.save(Recipe.builder()
                                 .user(user1)
