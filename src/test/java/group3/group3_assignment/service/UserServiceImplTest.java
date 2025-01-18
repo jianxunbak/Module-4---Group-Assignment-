@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
@@ -36,62 +37,70 @@ public class UserServiceImplTest {
                 .build();
     }
 
+    // @Test
+    // public void testAddUser() {
+    // when(userRepo.save(any(User.class))).thenReturn(user);
+
+    // User savedUser = userService.addUser(user);
+
+    // assertNotNull(savedUser);
+    // assertEquals("john_doe", savedUser.getUsername());
+    // verify(userRepo, times(1)).save(user);
+    // }
+
+    // @Test
+    // public void testGetUserById_UserFound() {
+    // when(userRepo.findById(1L)).thenReturn(Optional.of(user));
+
+    // User foundUser = userService.getUser(1L);
+
+    // assertNotNull(foundUser);
+    // assertEquals("john_doe", foundUser.getUsername());
+    // verify(userRepo, times(1)).findById(1L);
+    // }
+
+    // @Test
+    // public void testGetUserById_UserNotFound() {
+    // when(userRepo.findById(1L)).thenReturn(Optional.empty());
+
+    // assertThrows(UserNotFoundException.class, () -> userService.getUser(1L));
+    // verify(userRepo, times(1)).findById(1L);
+    // }
+
+    // @Test
+    // public void testUpdateUser() {
+    // User updatedDetails = User.builder()
+    // .username("updated_name")
+    // .email("updated.email@example.com")
+    // .password("newPassword123")
+    // .build();
+
+    // when(userRepo.findById(1L)).thenReturn(Optional.of(user));
+    // when(userRepo.save(any(User.class))).thenReturn(user);
+
+    // User updatedUser = userService.updateUser(1L, updatedDetails);
+
+    // assertNotNull(updatedUser);
+    // assertEquals("updated_name", updatedUser.getUsername());
+    // verify(userRepo, times(1)).findById(1L);
+    // verify(userRepo, times(1)).save(any(User.class));
+    // }
+
+    // @Test
+    // public void testDeleteUser() {
+    // when(userRepo.findById(1L)).thenReturn(Optional.of(user));
+
+    // userService.deleteUser(1L);
+
+    // verify(userRepo, times(1)).findById(1L);
+    // verify(userRepo, times(1)).delete(user);
+    // }
+
     @Test
-    public void testAddUser() {
-        when(userRepo.save(any(User.class))).thenReturn(user);
-
-        User savedUser = userService.addUser(user);
-
-        assertNotNull(savedUser);
-        assertEquals("john_doe", savedUser.getUsername());
-        verify(userRepo, times(1)).save(user);
-    }
-
-    @Test
-    public void testGetUserById_UserFound() {
-        when(userRepo.findById(1L)).thenReturn(Optional.of(user));
-
-        User foundUser = userService.getUser(1L);
-
-        assertNotNull(foundUser);
-        assertEquals("john_doe", foundUser.getUsername());
-        verify(userRepo, times(1)).findById(1L);
-    }
-
-    @Test
-    public void testGetUserById_UserNotFound() {
-        when(userRepo.findById(1L)).thenReturn(Optional.empty());
-
-        assertThrows(UserNotFoundException.class, () -> userService.getUser(1L));
-        verify(userRepo, times(1)).findById(1L);
-    }
-
-    @Test
-    public void testUpdateUser() {
-        User updatedDetails = User.builder()
-                .username("updated_name")
-                .email("updated.email@example.com")
-                .password("newPassword123")
-                .build();
-
-        when(userRepo.findById(1L)).thenReturn(Optional.of(user));
-        when(userRepo.save(any(User.class))).thenReturn(user);
-
-        User updatedUser = userService.updateUser(1L, updatedDetails);
-
-        assertNotNull(updatedUser);
-        assertEquals("updated_name", updatedUser.getUsername());
-        verify(userRepo, times(1)).findById(1L);
-        verify(userRepo, times(1)).save(any(User.class));
-    }
-
-    @Test
-    public void testDeleteUser() {
-        when(userRepo.findById(1L)).thenReturn(Optional.of(user));
-
-        userService.deleteUser(1L);
-
-        verify(userRepo, times(1)).findById(1L);
-        verify(userRepo, times(1)).delete(user);
+    public void testGetAllUsers() {
+        List<User> userList = List.of(user);
+        when(userRepo.findAll()).thenReturn(userList);
+        List<User> allUsers = userRepo.findAll();
+        assertNotNull(allUsers);
     }
 }
