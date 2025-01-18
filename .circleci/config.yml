@@ -12,7 +12,7 @@ jobs:
       - image: cimg/openjdk:17.0
     steps:
       - checkout
-      - maven/with-cache:
+      - maven/with_cache:
           steps:
             - run: |
                 echo "Install dependencies"
