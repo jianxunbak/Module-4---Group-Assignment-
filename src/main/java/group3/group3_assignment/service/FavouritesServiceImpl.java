@@ -59,12 +59,14 @@ public class FavouritesServiceImpl implements FavouritesService {
   // }
 
   @Override
-  public void deleteFavourites(Long userId, Long FavId) {
+  public void deleteFavourites(Long userId, Long recipeId) {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     String authenticatedUsername = authentication.getName();
 
-    Favourites favouritesToDelete = favouritesRepository.findById(FavId)
-        .orElseThrow(() -> new FavouritesNotFoundException());
+    // Favourites favouritesToDelete = favouritesRepository.findById(recipeId)
+        // .orElseThrow(() -> new FavouritesNotFoundException());
+    Favourites favouritesToDelete = favouritesRepository.findByUserIdAndRecipeId(userId, recipeId)
+        .orElseThrow(FavouritesNotFoundException::new);
     if (!favouritesToDelete.getUser().getId().equals(userId)) {
       throw new FavouritesNotFoundException();
     }
@@ -73,6 +75,7 @@ public class FavouritesServiceImpl implements FavouritesService {
     }
 
     favouritesRepository.delete(favouritesToDelete);
+    // verify(favouritesRepository, times(1)).delete(favouritesToDelete);
 
     // if (favouritesToDelete.getUser().getId().equals(userId)) {
     // if (authenticatedUsername.equals(favouritesToDelete.getUser().getUsername()))
@@ -100,25 +103,26 @@ public class FavouritesServiceImpl implements FavouritesService {
     return userFavouritesList;
   }
 
-  @Override
-  public Favourites addFavourites(Long userId, Integer recipeId, Favourites favourites) {
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    String authenticatedUsername = authentication.getName();
-    User existingUser = userRepo.findById(userId)
-        .orElseThrow(() -> new UserNotFoundException("user with id: " + userId + "is not found."));
-    Recipe selectedRecipe = recipeRepo.findById(recipeId).orElseThrow(() -> new RecipeNotFoundException(recipeId));
-    User selectedUser = userRepo.findById(userId).orElseThrow(() -> new FavUserNotFoundException(userId));
+  // @Override
+  // // public Favourites addFavourites(Long userId, Integer recipeId, Favourites favourites) {
+  // public Favourites addFavourites(Long userId, Long recipeId, Favourites favourites) {
+  //   Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+  //   String authenticatedUsername = authentication.getName();
+  //   User existingUser = userRepo.findById(userId)
+  //       .orElseThrow(() -> new UserNotFoundException("user with id: " + userId + "is not found."));
+  //   Recipe selectedRecipe = recipeRepo.findById(recipeId).orElseThrow(() -> new RecipeNotFoundException(recipeId));
+  //   User selectedUser = userRepo.findById(userId).orElseThrow(() -> new FavUserNotFoundException(userId));
 
-    if (!authenticatedUsername.equals(existingUser.getUsername())) {
-      throw new UserNotAuthorizeException(userId, "add", "recipe to another user's favourites");
-    }
-    if (favouritesRepository.findByUserIdAndRecipeId(userId, recipeId) != null) {
-      throw new DuplicateFavouritesException();
-    }
+  //   if (!authenticatedUsername.equals(existingUser.getUsername())) {
+  //     throw new UserNotAuthorizeException(userId, "add", "recipe to another user's favourites");
+  //   }
+  //   if (favouritesRepository.findByUserIdAndRecipeId(userId, recipeId) != null) {
+  //     throw new DuplicateFavouritesException();
+  //   }
 
-    favourites.setRecipe(selectedRecipe);
-    favourites.setUser(selectedUser);
-    return favouritesRepository.save(favourites);
+  //   favourites.setRecipe(selectedRecipe);
+  //   favourites.setUser(selectedUser);
+  //   return favouritesRepository.save(favourites);
 
-  }
+  // }
 }

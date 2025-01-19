@@ -16,9 +16,12 @@ public interface FavouritesRepository extends JpaRepository<Favourites, Long> {
 
   Optional<List<Favourites>> findAllByUserId(Long userId);
 
-  Favourites findByUserIdAndRecipeId(Long userId, Integer recipeId);
+  // Favourites findByUserIdAndRecipeId(Long userId, Integer recipeId);
+  // Favourites findByUserIdAndRecipeId(Long userId, Long recipeId);
+  Optional<Favourites> findByUserIdAndRecipeId(Long userId, Long recipeId);
 
-  void deleteByUserIdAndRecipeId(Long userId, Integer recipeId);
+  // void deleteByUserIdAndRecipeId(Long userId, Integer recipeId);
+  void deleteByUserIdAndRecipeId(Long userId, Long recipeId);
 
   Favourites save(FavouritesBuilder user);
 
