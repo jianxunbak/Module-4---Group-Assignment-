@@ -1,0 +1,38 @@
+version: 2.1
+
+orbs:
+  maven: circleci/maven@2.0.0
+  heroku: circleci/heroku@2.0.0
+  docker: circleci/docker@2.1.4
+  snyk: snyk/snyk@1.5.0
+
+jobs:
+  build:
+    docker:
+      - image: cimg/openjdk:17.0
+    steps:
+      - checkout
+      - maven/with_cache:
+          steps:
+            - run: |
+                echo "Install dependencies"
+                mvn clean install
+
+  test:
+    docker:
+      - image: cimg/openjdk:17.0
+    steps:
+      - checkout
+      - maven/with_cache:
+          steps:
+            - run: |
+                echo "Running tests"
+                mvn test
+
+workflows:
+  assignment_workflow:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build

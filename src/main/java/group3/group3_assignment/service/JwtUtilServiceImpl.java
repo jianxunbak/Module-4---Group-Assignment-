@@ -8,8 +8,9 @@ import javax.crypto.SecretKey;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import group3.group3_assignment.controller.AuthController;
@@ -24,16 +25,28 @@ import io.jsonwebtoken.security.Keys;
 public class JwtUtilServiceImpl implements JwtUtillService {
     UserRepo userRepo;
 
+    @Autowired
+    private Environment env;
+
     public JwtUtilServiceImpl(UserRepo userRepo) {
         this.userRepo = userRepo;
     }
 
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
-    // secret key. need to store this somewhere else!
-    private final String secretKey = "2c5a9f9c8c4d6eaf4f9a9c5d2f317c8d1b8f7e7d69f8b18f01b06f3a828c09a2";
-    // creates a crytographic secret key
-    private final SecretKey key = Keys.hmacShaKeyFor(secretKey.getBytes());
+    // secret key store as an env variable
+
+    public String getSecretKey() {
+        return env.getProperty("JWT_SECRET_KEY");
+    }
+
+    private SecretKey getKey() {
+        String secretKey = getSecretKey();
+        return Keys.hmacShaKeyFor(secretKey.getBytes());
+    }
+
+    // // creates a crytographic secret key
+    // private final SecretKey key = Keys.hmacShaKeyFor(secretKey.getBytes());
 
     public Map<String, String> generateToken(String username) {
         logger.debug("entered generate Token service");
@@ -43,7 +56,7 @@ public class JwtUtilServiceImpl implements JwtUtillService {
                 .subject(username)
                 .expiration(expirationDate)
                 .issuedAt(currentDate)
-                .signWith(key)
+                .signWith(getKey())
                 .compact(); // generate the final compact JWT
         logger.debug("finish building token");
 
@@ -64,7 +77,7 @@ public class JwtUtilServiceImpl implements JwtUtillService {
         // remove the "bearer that is sent from authroization header
         String token = authorizationHeader.replace("Bearer ", "");
         // verify that the token with the secret key
-        Jws<Claims> claimsJws = Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
+        Jws<Claims> claimsJws = Jwts.parser().verifyWith(getKey()).build().parseSignedClaims(token);
         // get the subject: username
         String username = claimsJws.getPayload().getSubject();
         Map<String, String> response = new HashMap<>();
