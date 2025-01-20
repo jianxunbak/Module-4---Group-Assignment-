@@ -32,7 +32,27 @@ jobs:
 workflows:
   assignment_workflow:
     jobs:
-      - build
+      - build:
+          filers:
+            branches:
+              only:
+                - feature
+                - develop
+                - release
+                - main
+              tags:
+                only: /^v.*/
       - test:
           requires:
             - build
+          filters:
+            branches:
+              only:
+                - feature
+                - develop
+                - release
+                - main
+             tags:
+                only: /^v.*/
+              
+            
