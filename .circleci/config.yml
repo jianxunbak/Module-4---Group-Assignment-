@@ -18,7 +18,31 @@ jobs:
                 echo "Install dependencies"
                 mvn clean install
 
+  test:
+    docker:
+      - image: cimg/openjdk:17.0
+    steps:
+      - checkout
+      - maven/with_cache:
+          steps:
+            - run: |
+                echo "Running tests"
+                mvn test
+
 workflows:
   assignment_workflow:
     jobs:
-      - build
+      - build:
+          filters:
+            branches:
+              ignore: []
+            tags:
+              only: /^v.*/
+      - test:
+          requires:
+            - build
+          filters:
+            branches:
+              ignore: []
+            tags:
+              only: /^v.*/
