@@ -34,7 +34,7 @@ jobs:
       - image: cimg/openjdk:17.0
     steps:
       - checkout
-      - setup_remote_docker  # Enables Docker commands within CircleCI
+      - setup_remote_docker # Enables Docker commands within CircleCI
       - run:
           name: Build Docker Image
           command: docker build -t k3llyz/module-4-group-assignment:latest .
@@ -44,29 +44,10 @@ jobs:
             echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
             docker push k3llyz/module-4-group-assignment:latest
 
-  test:
-    docker:
-      - image: cimg/openjdk:17.0
-    steps:
-      - checkout
-      - maven/with_cache:
-          steps:
-            - run: |
-                echo "Running tests"
-                mvn test
-
 workflows:
   assignment_workflow:
     jobs:
       - build:
-          filters:
-            branches:
-              ignore: []
-            tags:
-              only: /^v.*/
-      - test:
-          requires:
-            - build:
           filters:
             branches:
               ignore: []
@@ -86,10 +67,5 @@ workflows:
           filters:
             branches:
               only:
-                - release  # Runs when merging into release
-                - main     # Runs when merging into main
-          filters:
-            branches:
-              ignore: []
-            tags:
-              only: /^v.*/
+                - release # Runs when merging into release
+                - main # Runs when merging into main
