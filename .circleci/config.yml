@@ -34,7 +34,10 @@ jobs:
       - image: cimg/openjdk:17.0
     steps:
       - checkout
-      - setup_remote_docker  # Enables Docker commands within CircleCI
+      - setup_remote_docker # Enables Docker commands within CircleCI
+      - run:
+          name: Build Jar File
+          command: mvn clean install
       - run:
           name: Build Docker Image
           command: docker build -t k3llyz/module-4-group-assignment:latest .
@@ -67,5 +70,5 @@ workflows:
           filters:
             branches:
               only:
-                - release  # Runs when merging into release
-                - main     # Runs when merging into main
+                - release # Runs when merging into release
+                - main # Runs when merging into main
