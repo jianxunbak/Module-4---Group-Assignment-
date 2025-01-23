@@ -31,7 +31,7 @@ jobs:
 
   code-scan:
     docker:
-      - image: cimg/openjdk:17.0
+      - image: circleci/openjdk:17-node
     steps:
       - checkout
       - run:
