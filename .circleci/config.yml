@@ -47,6 +47,21 @@ jobs:
             echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
             docker push k3llyz/module-4-group-assignment:latest
 
+  deploy:
+    docker:
+      - image: cimg/openjdk:17.0
+    steps:
+      - checkout
+      - setup_remote_docker
+      - heroku/install
+      - run:
+          name: Push to Heroku Container
+          command: |
+            heroku container:login
+            heroku stack:set container -a module-4-group-assignment
+            heroku container:push web -a module-4-group-assignment
+            heroku container:release web -a module-4-group-assignment
+
 workflows:
   assignment_workflow:
     jobs:
@@ -70,3 +85,13 @@ workflows:
           filters:
             branches:
               ignore: feature
+            tags:
+              only: /^v.*/
+      - deploy:
+          requires:
+            - publish
+          filters:
+            branches:
+              only: main
+            tags:
+              only: /^v.*/
