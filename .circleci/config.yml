@@ -29,6 +29,21 @@ jobs:
                 echo "Running tests"
                 mvn test
 
+  code-scan:
+    docker:
+      - image: cimg/openjdk:17.0
+    steps:
+      - checkout
+      - run:
+          name: Install Snyk CLI
+          command: npm install -g snyk
+      - run:
+          command: snyk version
+          name: Which version of snyk is installed
+      - run:
+          name: Run Snyk Code Scan
+          command: snyk code test --severity-threshold=high
+
   publish:
     docker:
       - image: cimg/openjdk:17.0
@@ -90,9 +105,17 @@ workflows:
               ignore: []
             tags:
               only: /^v.*/
-      - publish:
+      - code-scan:
           requires:
             - test
+          filters:
+            branches:
+              ignore: []
+            tags:
+              only: /^v.*/
+      - publish:
+          requires:
+            - code-scan
           filters:
             branches:
               ignore: feature
