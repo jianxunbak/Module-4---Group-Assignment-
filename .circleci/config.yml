@@ -55,6 +55,9 @@ jobs:
       - setup_remote_docker
       - heroku/install
       - run:
+          name: Build Jar File
+          command: mvn clean install
+      - run:
           name: set Heroku Postgress add-on
           command: |
             heroku addons:create heroku-postgresql:essential-0 -a module-4-group-assignment
@@ -67,6 +70,7 @@ jobs:
           command: |
             heroku container:login
             heroku stack:set container -a module-4-group-assignment
+            heroku container:push web -a module-4-group-assignment
             heroku container:release web -a module-4-group-assignment
 
 workflows:
