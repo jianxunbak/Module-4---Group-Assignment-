@@ -29,6 +29,16 @@ jobs:
                 echo "Running tests"
                 mvn test
 
+  code-scan:
+    docker:
+      - image: cimg/openjdk:17.0
+    steps:
+      - checkout
+      - snyk/scan:
+          project_base_path: . # Update this path if your project is not in the root directory
+          monitor_on_build: true
+          additional_arguments: "--code --severity-threshold=high"
+
   publish:
     docker:
       - image: cimg/openjdk:17.0
@@ -90,9 +100,17 @@ workflows:
               ignore: []
             tags:
               only: /^v.*/
-      - publish:
+      - code-scan:
           requires:
             - test
+          filters:
+            branches:
+              ignore: []
+            tags:
+              only: /^v.*/
+      - publish:
+          requires:
+            - code-scan
           filters:
             branches:
               ignore: feature
