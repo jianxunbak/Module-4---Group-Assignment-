@@ -59,6 +59,10 @@ jobs:
           command: |
             heroku addons:create heroku-postgresql:essential-0 -a module-4-group-assignment
       - run:
+          name: Pull Docker Image from Docker Hub
+          command: |
+            docker pull k3llyz/module-4-group-assignment:latest
+      - run:
           name: Push to Heroku Container
           command: |
             heroku container:login
