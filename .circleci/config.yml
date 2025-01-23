@@ -31,18 +31,17 @@ jobs:
 
   code-scan:
     docker:
-      - image: circleci/openjdk:17-node
+      - image: cimg/node:16.10
     steps:
       - checkout
-      - run:
-          name: Install Snyk CLI
-          command: npm install -g snyk
+      - run: npm ci
+      - snyk/install
       - run:
           command: snyk version
           name: Which version of snyk is installed
       - run:
-          name: Run Snyk Code Scan
-          command: snyk code test --severity-threshold=high
+          command: snyk code test
+          name: Run code scan
 
   publish:
     docker:
