@@ -31,13 +31,18 @@ jobs:
 
   code-scan:
     docker:
-      - image: cimg/openjdk:17.0
+      - image: circleci/openjdk:17-node
     steps:
       - checkout
-      - snyk/scan:
-          project_base_path: . # Update this path if your project is not in the root directory
-          monitor_on_build: true
-          additional_arguments: "--code --severity-threshold=high"
+      - run:
+          name: Install Snyk CLI
+          command: npm install -g snyk
+      - run:
+          command: snyk version
+          name: Which version of snyk is installed
+      - run:
+          name: Run Snyk Code Scan
+          command: snyk code test --severity-threshold=high
 
   publish:
     docker:
