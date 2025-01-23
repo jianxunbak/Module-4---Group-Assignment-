@@ -29,6 +29,16 @@ jobs:
                 echo "Running tests"
                 mvn test
 
+  code-scan:
+    docker:
+      - image: cimg/openjdk:17.0
+    steps:
+      - checkout
+      - snyk/scan:
+          project_base_path: . # Update this path if your project is not in the root directory
+          monitor_on_build: true
+          additional_arguments: "--code --severity-threshold=high"
+
   publish:
     docker:
       - image: cimg/openjdk:17.0
@@ -47,6 +57,32 @@ jobs:
             echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
             docker push k3llyz/module-4-group-assignment:latest
 
+  deploy:
+    docker:
+      - image: cimg/openjdk:17.0
+    steps:
+      - checkout
+      - setup_remote_docker
+      - heroku/install
+      - run:
+          name: Build Jar File
+          command: mvn clean install
+      - run:
+          name: set Heroku Postgress add-on
+          command: |
+            heroku addons:create heroku-postgresql:essential-0 -a module-4-group-assignment
+      - run:
+          name: Pull Docker Image from Docker Hub
+          command: |
+            docker pull k3llyz/module-4-group-assignment:latest
+      - run:
+          name: Push to Heroku Container
+          command: |
+            heroku container:login
+            heroku stack:set container -a module-4-group-assignment
+            heroku container:push web -a module-4-group-assignment
+            heroku container:release web -a module-4-group-assignment
+
 workflows:
   assignment_workflow:
     jobs:
@@ -64,11 +100,27 @@ workflows:
               ignore: []
             tags:
               only: /^v.*/
-      - publish:
+      - code-scan:
           requires:
             - test
           filters:
             branches:
-              only:
-                - release # Runs when merging into release
-                - main # Runs when merging into main
+              ignore: []
+            tags:
+              only: /^v.*/
+      - publish:
+          requires:
+            - code-scan
+          filters:
+            branches:
+              ignore: feature
+            tags:
+              only: /^v.*/
+      - deploy:
+          requires:
+            - publish
+          filters:
+            branches:
+              only: main
+            tags:
+              only: /^v.*/
