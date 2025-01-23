@@ -55,6 +55,10 @@ jobs:
       - setup_remote_docker
       - heroku/install
       - run:
+          name: set Heroku Postgress add-on
+          command: |
+            heroku addons:create heroku-postgresql:essential-0 -a module-4-group-assignment
+      - run:
           name: Push to Heroku Container
           command: |
             heroku container:login
