@@ -91,7 +91,5 @@ workflows:
           requires:
             - publish
           filters:
-            branches:
-              only: main
             tags:
               only: /^v.*/
