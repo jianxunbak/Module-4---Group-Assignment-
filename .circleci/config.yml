@@ -40,6 +40,9 @@ jobs:
       - run:
           name: Authenticate DockerHub
           command: echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+      - run:
+          name: Authenticate with Snyk using API Token
+          command: snyk auth $SNYK_TOKEN
       - snyk/install
       - run:
           name: Run Snyk Code Scan
