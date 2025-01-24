@@ -1,7 +1,6 @@
 version: 2.1
 
 orbs:
-  node: circleci/node@5.0.1
   maven: circleci/maven@2.0.0
   heroku: circleci/heroku@2.0.0
   docker: circleci/docker@2.1.4
@@ -37,7 +36,7 @@ jobs:
       - checkout
       - run:
           name: Install Snyk CLI
-          command: npm install -g snyk
+          command: snyk/install
       - run:
           command: snyk version
           name: Which version of snyk is installed
