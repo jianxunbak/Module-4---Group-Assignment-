@@ -55,7 +55,10 @@ public class SecurityConfig {
                 // handles authentication using usernam and password (login form)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 // disables the cross site request forgery atacks
-                .csrf(csrf -> csrf.disable());
+                .csrf(csrf -> csrf.ignoringRequestMatchers(
+                        "/auth/generateToken",
+                        "/users",
+                        "/recipe"));
 
         // the build method returns a SecurityFilterChain instance which contains all
         // the configuration made.
