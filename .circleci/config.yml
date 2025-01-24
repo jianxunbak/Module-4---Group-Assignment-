@@ -32,21 +32,15 @@ jobs:
   code-scan:
     docker:
       - image: cimg/openjdk:17.0
-    environment:
-      IMAGE_NAME: k3llyz/module-4-group-assignment
     steps:
       - checkout
-      - setup_remote_docker
-      - run:
-          name: Authenticate DockerHub
-          command: echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
       - snyk/install
       - run:
           name: Verify Snyk CLI Installation
           command: snyk --version
-      - run:
-          name: Authenticate with Snyk using API Token
-          command: snyk auth $SNYK_TOKEN
+      # - run:
+      #     name: Authenticate with Snyk using API Token
+      #     command: snyk auth $SNYK_TOKEN
       - run:
           name: Run Snyk Code Scan
           command: snyk code test --severity-threshold=high
