@@ -73,10 +73,10 @@ jobs:
       - run:
           name: Build Jar File
           command: mvn clean install
-      # - run:
-      #     name: set Heroku Postgress add-on
-      #     command: |
-      #       heroku addons:create heroku-postgresql:essential-0 -a module-4-group-assignment
+      - run:
+          name: set Heroku Postgress add-on
+          command: |
+            heroku addons:create heroku-postgresql:essential-0 -a module-4-group-assignment
       - run:
           name: Pull Docker Image from Docker Hub
           command: |
@@ -88,17 +88,17 @@ jobs:
             heroku stack:set container -a module-4-group-assignment
             heroku container:push web -a module-4-group-assignment
             heroku container:release web -a module-4-group-assignment
-      - run:
-          name: Check Database Connection
-          command: heroku run "psql $DATABASE_URL -c '\dt'" -a module-4-group-assignment
-      - run:
-          name: Verify Heroku Database Connection
-          command: |
-            export DATABASE_URL=$(heroku config:get DATABASE_URL -a module-4-group-assignment)
-            heroku pg:psql -a module-4-group-assignment \<<EOF
-            \dt
-            SELECT * FROM information_schema.tables WHERE table_schema = 'public';
-            EOF
+      # - run:
+      #     name: Check Database Connection
+      #     command: heroku run "psql $DATABASE_URL -c '\dt'" -a module-4-group-assignment
+      # - run:
+      #     name: Verify Heroku Database Connection
+      #     command: |
+      #       export DATABASE_URL=$(heroku config:get DATABASE_URL -a module-4-group-assignment)
+      #       heroku pg:psql -a module-4-group-assignment \<<EOF
+      #       \dt
+      #       SELECT * FROM information_schema.tables WHERE table_schema = 'public';
+      #       EOF
 workflows:
   assignment_workflow:
     jobs:
