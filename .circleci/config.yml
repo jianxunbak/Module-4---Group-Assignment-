@@ -94,7 +94,7 @@ jobs:
       - run:
           name: Verify Heroku Database Connection
           command: |
-            heroku pg:psql -a module-4-group-assignment <<EOF
+            heroku pg:psql -a module-4-group-assignment \<<EOF
             \dt
             SELECT * FROM information_schema.tables WHERE table_schema = 'public';
             EOF
