@@ -37,14 +37,14 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
+      - run:
+          name: Authenticate DockerHub
+          command: echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
       - docker/check
       - snyk/install
       - run:
           name: Run Snyk Code Scan
           command: snyk code test --severity-threshold=high
-      - run:
-          name: Authenticate DockerHub
-          command: echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
   publish:
     docker:
