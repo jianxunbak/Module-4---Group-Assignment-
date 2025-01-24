@@ -32,11 +32,13 @@ jobs:
   code-scan:
     docker:
       - image: cimg/openjdk:17.0
+    environment:
+      IMAGE_NAME: k3llyz/module-4-group-assignment
     steps:
       - checkout
-      - run:
-          command: snyk version
-          name: Which version of snyk is installed
+      - setup_remote_docker
+      - docker/check
+      - snyk/install
       - run:
           name: Run Snyk Code Scan
           command: snyk code test --severity-threshold=high
@@ -52,7 +54,7 @@ jobs:
           command: mvn clean install
       - run:
           name: Build Docker Image
-          command: docker build -t k3llyz/module-4-group-assignment:latest .
+          command: docker build -t k3llyz/module-4-g roup-assignment:latest .
       - run:
           name: Push Docker Image to DockerHub
           command: |
