@@ -32,8 +32,10 @@ public class DataLoader {
 
         @PostConstruct
         public void loadData() {
-                recipeRepo.deleteAll();
-
+                if (recipeRepo.count() > 0) {
+                        return;
+                }
+                ;
                 String dateToParse1 = "2018-11-22";
                 String dateToParse2 = "2018-11-01";
                 String dateToParse3 = "2018-12-15";
