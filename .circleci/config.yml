@@ -37,10 +37,10 @@ jobs:
     steps:
       - checkout
       - docker/check
+      - setup_remote_docker
       - run:
         name: set up Docker Image to DockerHub
         command: |
-          setup_remote_docker
           echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
       - snyk/install
       - run:
