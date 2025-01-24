@@ -73,10 +73,10 @@ jobs:
       - run:
           name: Build Jar File
           command: mvn clean install
-      - run:
-          name: set Heroku Postgress add-on
-          command: |
-            heroku addons:create heroku-postgresql:essential-0 -a module-4-group-assignment
+      # - run:
+      #     name: set Heroku Postgress add-on
+      #     command: |
+      #       heroku addons:create heroku-postgresql:essential-0 -a module-4-group-assignment
       - run:
           name: Pull Docker Image from Docker Hub
           command: |
