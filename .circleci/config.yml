@@ -29,6 +29,19 @@ jobs:
                 echo "Running tests"
                 mvn test
 
+  code-scan:
+    docker:
+      - image: cimg/openjdk:17.0
+    steps:
+      - checkout
+      - snyk/install
+      - run:
+          name: Verify Snyk CLI Installation
+          command: snyk --version
+      - run:
+          name: Run Snyk Code Scan
+          command: snyk code test --severity-threshold=high
+
   publish:
     docker:
       - image: cimg/openjdk:17.0
@@ -55,6 +68,13 @@ jobs:
       - setup_remote_docker
       - heroku/install
       - run:
+          name: Build Jar File
+          command: mvn clean install
+      - run:
+          name: Pull Docker Image from Docker Hub
+          command: |
+            docker pull k3llyz/module-4-group-assignment:latest
+      - run:
           name: Push to Heroku Container
           command: |
             heroku container:login
@@ -79,9 +99,17 @@ workflows:
               ignore: []
             tags:
               only: /^v.*/
-      - publish:
+      - code-scan:
           requires:
             - test
+          filters:
+            branches:
+              ignore: []
+            tags:
+              only: /^v.*/
+      - publish:
+          requires:
+            - code-scan
           filters:
             branches:
               ignore: feature
