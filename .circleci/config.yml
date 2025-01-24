@@ -56,7 +56,7 @@ jobs:
           command: mvn clean install
       - run:
           name: Build Docker Image
-          command: docker build -t k3llyz/module-4-g roup-assignment:latest .
+          command: docker build -t k3llyz/module-4-group-assignment:latest .
       - run:
           name: Push Docker Image to DockerHub
           command: |
