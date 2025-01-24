@@ -35,9 +35,6 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install Snyk CLI
-          command: snyk/install
-      - run:
           command: snyk version
           name: Which version of snyk is installed
       - run:
